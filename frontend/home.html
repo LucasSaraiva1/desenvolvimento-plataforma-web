@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Bem-vindo à Home</h1><br>
+        <div id="work-messages">
+            <h2>Mensagens Relacionadas ao Trabalho Desenvolvido</h2><br>
+            <ul>
+                <li>Projeto de autenticação e autorização com JWT concluído.</li>
+                <li>Configuração e testes das rotas básicas de usuários e requisições finalizados.</li>
+                <li>Implementação da funcionalidade de consulta de requisições em progresso.</li>
+                <li>Configuração da verificação de perfil de usuário no frontend implementada.</li>
+                <li>Opção de exclusão de usuários adicionada no arquivo editar.html.</li>
+                <li>Equipe : Lucas Saraiva (2124631) e Antônia Clares (2318524)</li><br>
+            </ul>
+        </div>
+        <a href="cadastro.html" class="btn btn-primary">Cadastrar Usuário</a>
+        <a href="editar.html" class="btn btn-secondary">Editar Usuário</a>
+    </div>
+
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Verificar token JWT e redirecionar se não estiver autenticado
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+
+        // Verificar o perfil do usuário
+        async function checkUserRole() {
+            try {
+                const response = await axios.get('http://localhost:3000/users/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = response.data;
+                if (user.perfil !== 'administrativo') {
+                    document.querySelector('.btn-primary').classList.add('d-none'); // Esconder botão de cadastro para usuários não administrativos
+                    document.querySelector('.btn-secondary').classList.add('d-none');    
+                }
+            } catch (error) {
+                console.error('Erro ao verificar perfil do usuário:', error);
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            }
+        }
+
+        checkUserRole();
+    </script>
+</body>
+</html>

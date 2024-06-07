@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Administrador</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Mensagem Secreta</h1>
+        <p id="message" class="alert alert-info d-none">Olá, você conseguiu acessar</p>
+        <div id="error-message" class="alert alert-danger d-none"></div>
+    </div>
+
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Verificar token JWT e redirecionar se não estiver autenticado
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+
+        // Verificar o perfil do usuário
+        async function checkUserRole() {
+            try {
+                const response = await axios.get('http://localhost:3000/users/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = response.data;
+                if (user.perfil === 'administrativo') {
+                    document.getElementById('message').classList.remove('d-none');
+                } else {
+                    document.getElementById('error-message').innerText = 'Acesso negado. Você não tem permissão para acessar esta página.';
+                    document.getElementById('error-message').classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar perfil do usuário:', error);
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            }
+        }
+
+        checkUserRole();
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="senha" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="senha" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div id="message" class="mt-3"></div>
+        <h2>Mensagens Relacionadas ao Trabalho Desenvolvido</h2><br>
+            <ul>
+                <li>Projeto de autenticação e autorização com JWT concluído.</li>
+                <li>Configuração e testes das rotas básicas de usuários e requisições finalizados.</li>
+                <li>Implementação da funcionalidade de consulta de requisições em progresso.</li>
+                <li>Configuração da verificação de perfil de usuário no frontend implementada.</li>
+                <li>Opção de exclusão de usuários adicionada no arquivo editar.html.</li>
+                <li>Equipe : Lucas Saraiva (2124631) e Antônia Clares (2318524)</li><br>
+            </ul>
+        </div>
+
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try {
+                const response = await axios.post('http://localhost:3000/users/login', { email, senha });
+                if (response.data.success) {
+                    localStorage.setItem('token', response.data.token);
+                    window.location.href = 'home.html';
+                } else {
+                    document.getElementById('message').innerText = 'Login falhou: ' + response.data.message;
+                }
+            } catch (error) {
+                document.getElementById('message').innerText = 'Erro ao efetuar login: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
